@@ -18,12 +18,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/etDatePicker"
         android:cursorVisible="false"
-        android:layout_marginLeft="5dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_toRightOf="@+id/tvNewsDeskValues"
-        android:layout_toEndOf="@+id/tvBeginDate"
-        />
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/checkbox_arts"
+        android:layout_alignStart="@+id/checkbox_arts" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -85,6 +82,16 @@
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="5dp"
             android:text="@string/checkbox_sports" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:id="@+id/btnSave"
+        android:layout_below="@+id/checkbox_sports"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:onClick="onSave"/>
 
 
 </RelativeLayout>

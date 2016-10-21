@@ -12,11 +12,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.example.chmanish.nytimessearch.R;
 import com.example.chmanish.nytimessearch.adapters.ArticleArrayAdapter;
 import com.example.chmanish.nytimessearch.fragments.EditFilterDialogFragment;
 import com.example.chmanish.nytimessearch.models.Article;
+import com.example.chmanish.nytimessearch.models.Filter;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -29,12 +31,12 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements EditFilterDialogFragment.EditFilterDialogListener {
 
     //EditText etQuery;
     GridView gvResults;
     //Button btnSearch;
-
+    boolean isFilterSet;
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
     @Override
@@ -146,4 +148,11 @@ public class SearchActivity extends AppCompatActivity {
         //Toast.makeText(this, "Searching for" + query, Toast.LENGTH_LONG).show();
 
     }*/
+    @Override
+    public void onFinishEditDialog(Filter filterValues) {
+        StringBuilder sb = new StringBuilder().append(filterValues.getMonthOfYear())
+                .append("/").append(filterValues.getDay()).append("/").append(filterValues.getYear());
+        Toast.makeText(this, sb.toString(), Toast.LENGTH_SHORT).show();
+    }
+
 }
