@@ -2,6 +2,7 @@ package com.example.chmanish.nytimessearch.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -10,12 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 
 import com.example.chmanish.nytimessearch.R;
 import com.example.chmanish.nytimessearch.adapters.ArticleArrayAdapter;
+import com.example.chmanish.nytimessearch.fragments.EditFilterDialogFragment;
 import com.example.chmanish.nytimessearch.models.Article;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -31,9 +31,9 @@ import cz.msebera.android.httpclient.Header;
 
 public class SearchActivity extends AppCompatActivity {
 
-    EditText etQuery;
+    //EditText etQuery;
     GridView gvResults;
-    Button btnSearch;
+    //Button btnSearch;
 
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
@@ -43,14 +43,15 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("New York Times Search");
         setupViews();
 
     }
 
     public void setupViews(){
-        etQuery = (EditText) findViewById(R.id.etQuery);
+        //etQuery = (EditText) findViewById(R.id.etQuery);
         gvResults = (GridView) findViewById(R.id.gvResults);
-        btnSearch = (Button) findViewById(R.id.btnSearch);
+        //btnSearch = (Button) findViewById(R.id.btnSearch);
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(this, articles);
         gvResults.setAdapter(adapter);
@@ -80,7 +81,27 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // perform query here
+                AsyncHttpClient client = new AsyncHttpClient();
+                String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
 
+                RequestParams params = new RequestParams();
+                params.put("api-key", "0615376bbf4c4801a036cccbc32d58f0");
+                params.put("page", 0);
+                params.put("q", query);
+
+                client.get(url, params, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        JSONArray articleJsonResults = null;
+
+                        try{
+                            articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+                            adapter.addAll(Article.fromJSONArray(articleJsonResults));
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                });
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599
                 searchView.clearFocus();
@@ -105,36 +126,24 @@ public class SearchActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
+            return true;
+        }*/
+
+        if (id == R.id.action_filter) {
+            FragmentManager fm = getSupportFragmentManager();
+            EditFilterDialogFragment editNameDialogFragment = EditFilterDialogFragment.newInstance();
+            editNameDialogFragment.show(fm, "fragment_edit_filter");
+
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
+    /*
     public void onArticleSearch(View view) {
         String query = etQuery.getText().toString();
         //Toast.makeText(this, "Searching for" + query, Toast.LENGTH_LONG).show();
-        AsyncHttpClient client = new AsyncHttpClient();
-        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
 
-        RequestParams params = new RequestParams();
-        params.put("api-key", "0615376bbf4c4801a036cccbc32d58f0");
-        params.put("page", 0);
-        params.put("q", query);
-
-        client.get(url, params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                JSONArray articleJsonResults = null;
-
-                try{
-                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
-                } catch (JSONException e){
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+    }*/
 }
