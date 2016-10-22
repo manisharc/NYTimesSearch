@@ -151,7 +151,8 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
         params.put("q", querySavedForPagination);
 
         if(filterSet != null){
-            params.put("begin_date", filterSet.getDate());
+            if(filterSet.getDate() != null)
+                params.put("begin_date", filterSet.getDate());
             if (filterSet.isSortOldest())
                 params.put("sort", "oldest");
             if(filterSet.getNewsDeskString() != null){

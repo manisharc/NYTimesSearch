@@ -15,14 +15,14 @@ public class Filter {
 
     public Filter() {
         final Calendar c = Calendar.getInstance();
-        StringBuilder sb = new StringBuilder().append(c.get(Calendar.YEAR));
+        /*StringBuilder sb = new StringBuilder().append(c.get(Calendar.YEAR));
         if(c.get(Calendar.MONTH) < 10)
             sb.append(0);
         sb.append(c.get(Calendar.MONTH));
         if(c.get(Calendar.DAY_OF_MONTH) < 10)
             sb.append(0);
-        sb.append(Calendar.DAY_OF_MONTH);
-        date = sb.toString();
+        sb.append(Calendar.DAY_OF_MONTH);*/
+        date = null;
         this.sortOldest = true;
         this.checkArts = false;
         this.checkFashion = false;
@@ -53,13 +53,12 @@ public class Filter {
     }
 
     public String getNewsDeskString(){
-
-        StringBuilder sb = new StringBuilder();
-
         if (!isCheckFashion() &&
                !isCheckArts() &&
                !isCheckSports())
-            return sb.toString();
+            return null;
+
+        StringBuilder sb = new StringBuilder();
         boolean addedSomething = false;
         sb.append("news_desk:(");
         if(isCheckFashion()){
