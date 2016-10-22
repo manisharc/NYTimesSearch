@@ -5,17 +5,18 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 
 import com.example.chmanish.nytimessearch.R;
-import com.example.chmanish.nytimessearch.adapters.ArticleArrayAdapter;
-import com.example.chmanish.nytimessearch.adapters.EndlessScrollListener;
+import com.example.chmanish.nytimessearch.SpacesItemDecoration;
+import com.example.chmanish.nytimessearch.adapters.ArticleAdapter;
+import com.example.chmanish.nytimessearch.adapters.EndlessRecyclerViewScrollListener;
 import com.example.chmanish.nytimessearch.fragments.EditFilterDialogFragment;
 import com.example.chmanish.nytimessearch.models.Article;
 import com.example.chmanish.nytimessearch.models.Filter;
@@ -32,11 +33,10 @@ import java.util.ArrayList;
 import cz.msebera.android.httpclient.Header;
 
 public class SearchActivity extends AppCompatActivity implements EditFilterDialogFragment.EditFilterDialogListener {
-
-    GridView gvResults;
+    //GridView gvResults;
     Filter filterSet;
     ArrayList<Article> articles;
-    ArticleArrayAdapter adapter;
+    ArticleAdapter adapter;
     static String querySavedForPagination;
 
     @Override
@@ -50,15 +50,24 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
     }
 
     public void setupViews(){
-        gvResults = (GridView) findViewById(R.id.gvResults);
+        RecyclerView rvArticles = (RecyclerView) findViewById(R.id.rvResults);
+        SpacesItemDecoration decoration = new SpacesItemDecoration(16);
+        rvArticles.addItemDecoration(decoration);
         articles = new ArrayList<>();
-        adapter = new ArticleArrayAdapter(this, articles);
-        gvResults.setAdapter(adapter);
+        adapter = new ArticleAdapter(this, articles);
+        rvArticles.setAdapter(adapter);
+        // First param is number of columns and second param is orientation i.e Vertical or Horizontal
+        StaggeredGridLayoutManager gridLayoutManager =
+                new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        // Attach the layout manager to the recycler view
+        rvArticles.setLayoutManager(gridLayoutManager);
+        //rvArticles.setLayoutManager(new LinearLayoutManager(this));
+
 
         //hook up listener for grid click
-        gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        adapter.setOnItemClickListener(new ArticleAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(View view, int position) {
                 Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
                 Article article = articles.get(position);
                 i.putExtra("url", article.getWebUrl());
@@ -67,26 +76,17 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
         });
 
         // Attach the listener to the AdapterView onCreate
-        gvResults.setOnScrollListener(new EndlessScrollListener() {
+        rvArticles.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
+            public void onLoadMore(int page, int totalItemsCount) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to your AdapterView
                 //customLoadMoreDataFromApi(page);
                 makeQueryAndUpdateView(page-1);
-                // or customLoadMoreDataFromApi(totalItemsCount);
-                return true; // ONLY if more data is actually being loaded; false otherwise.
             }
         });
     }
 
-    // Append more data into the adapter
-    public void customLoadMoreDataFromApi(int offset) {
-        // This method probably sends out a network request and appends new data items to your adapter.
-        // Use the offset value and add it as a parameter to your API request to retrieve paginated data.
-        // Deserialize API response and then construct new objects to append to the adapter
-
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -97,8 +97,8 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // perform query here
-                adapter.clear();
-                adapter.notifyDataSetChanged();
+                //adapter.clear();
+                //adapter.notifyDataSetChanged();
                 querySavedForPagination = query;
                 makeQueryAndUpdateView(0);
 
@@ -165,8 +165,11 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 JSONArray articleJsonResults = null;
                 try{
+                    int curSize = adapter.getItemCount();
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
+
+                    articles.addAll(Article.fromJSONArray(articleJsonResults));
+                    adapter.notifyItemRangeInserted(curSize, (Article.fromJSONArray(articleJsonResults)).size());
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
