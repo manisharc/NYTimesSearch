@@ -51,7 +51,6 @@ public class Filter {
         sb.append(day);
         this.date = sb.toString();
     }
-    //params.put("fq", "news_desk:(\"Education\"%20\"Health\")");
 
     public String getNewsDeskString(){
 

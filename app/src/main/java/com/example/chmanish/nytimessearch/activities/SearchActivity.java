@@ -15,6 +15,7 @@ import android.widget.GridView;
 
 import com.example.chmanish.nytimessearch.R;
 import com.example.chmanish.nytimessearch.adapters.ArticleArrayAdapter;
+import com.example.chmanish.nytimessearch.adapters.EndlessScrollListener;
 import com.example.chmanish.nytimessearch.fragments.EditFilterDialogFragment;
 import com.example.chmanish.nytimessearch.models.Article;
 import com.example.chmanish.nytimessearch.models.Filter;
@@ -36,6 +37,7 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
     Filter filterSet;
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
+    static String querySavedForPagination;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,16 +59,33 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
         gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //create an intent to display the article
                 Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
-                //get the article to display
                 Article article = articles.get(position);
-                //pass in that article into intent
                 i.putExtra("url", article.getWebUrl());
-                //launch the activity
                 startActivity(i);
             }
         });
+
+        // Attach the listener to the AdapterView onCreate
+        gvResults.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to your AdapterView
+                //customLoadMoreDataFromApi(page);
+                makeQueryAndUpdateView(page-1);
+                // or customLoadMoreDataFromApi(totalItemsCount);
+                return true; // ONLY if more data is actually being loaded; false otherwise.
+            }
+        });
+    }
+
+    // Append more data into the adapter
+    public void customLoadMoreDataFromApi(int offset) {
+        // This method probably sends out a network request and appends new data items to your adapter.
+        // Use the offset value and add it as a parameter to your API request to retrieve paginated data.
+        // Deserialize API response and then construct new objects to append to the adapter
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -78,41 +97,14 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // perform query here
-                AsyncHttpClient client = new AsyncHttpClient();
-                String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+                adapter.clear();
+                adapter.notifyDataSetChanged();
+                querySavedForPagination = query;
+                makeQueryAndUpdateView(0);
 
-                RequestParams params = new RequestParams();
-                params.put("api-key", "0615376bbf4c4801a036cccbc32d58f0");
-                params.put("page", 0);
-                params.put("q", query);
-
-                if(filterSet != null){
-                    params.put("begin_date", filterSet.getDate());
-                    if (filterSet.isSortOldest())
-                        params.put("sort", "oldest");
-                    if(filterSet.getNewsDeskString() != null){
-                        params.put("fq", filterSet.getNewsDeskString());
-                    }
-
-                }
-
-                client.get(url, params, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        JSONArray articleJsonResults = null;
-                        try{
-                            articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                            adapter.clear();
-                            adapter.addAll(Article.fromJSONArray(articleJsonResults));
-                        } catch (JSONException e){
-                            e.printStackTrace();
-                        }
-                    }
-                });
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599
                 searchView.clearFocus();
-
                 return true;
             }
 
@@ -145,8 +137,41 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
 
     @Override
     public void onFinishEditDialog(Filter filterValues) {
-        //Toast.makeText(this, filterValues.getDate(), Toast.LENGTH_SHORT).show();
         filterSet = new Filter(filterValues);
+
+    }
+
+    public void makeQueryAndUpdateView(int page){
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+
+        RequestParams params = new RequestParams();
+        params.put("api-key", "0615376bbf4c4801a036cccbc32d58f0");
+        params.put("page", page);
+        params.put("q", querySavedForPagination);
+
+        if(filterSet != null){
+            params.put("begin_date", filterSet.getDate());
+            if (filterSet.isSortOldest())
+                params.put("sort", "oldest");
+            if(filterSet.getNewsDeskString() != null){
+                params.put("fq", filterSet.getNewsDeskString());
+            }
+
+        }
+        client.get(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                JSONArray articleJsonResults = null;
+                try{
+                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
 
     }
 
