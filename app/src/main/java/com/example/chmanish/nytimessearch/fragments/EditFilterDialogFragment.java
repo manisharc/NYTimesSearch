@@ -77,7 +77,8 @@ public class EditFilterDialogFragment extends DialogFragment implements DatePick
             @Override
             public void onClick(View v) {
                 // Return input text back to activity through the implemented listener
-                if (sp.getSelectedItem().toString() == "Oldest")
+                String value = sp.getSelectedItem().toString();
+                if (sp.getSelectedItem().toString().compareToIgnoreCase("Oldest") == 0)
                     filterValues.setSortOldest(true);
                 else
                     filterValues.setSortOldest(false);
@@ -129,9 +130,7 @@ public class EditFilterDialogFragment extends DialogFragment implements DatePick
         String formattedDate = sb.toString();
         etDate.setText(formattedDate);
         etDate.setCursorVisible(false);
-        filterValues.setDay(dayOfMonth);
-        filterValues.setMonthOfYear(monthOfYear+1);
-        filterValues.setYear(year);
+        filterValues.setDate(year, monthOfYear+1, dayOfMonth);
     }
 
     @Override
@@ -148,21 +147,6 @@ public class EditFilterDialogFragment extends DialogFragment implements DatePick
         // Call super onResume after sizing
         super.onResume();
     }
-    /*
-    public void onSave(View view) {
-        // Return input text back to activity through the implemented listener
-        if (sp.getSelectedItem().toString() == "Oldest")
-            filterValues.setSortOldest(true);
-        else
-            filterValues.setSortOldest(false);
 
-        filterValues.setCheckArts(cbArts.isChecked());
-        filterValues.setCheckFashion(cbFashion.isChecked());
-        filterValues.setCheckSports(cbSports.isChecked());
-        EditFilterDialogListener listener = (EditFilterDialogListener) getActivity();
-        listener.onFinishEditDialog(filterValues);
-        // Close the dialog and return back to the parent activity
-        dismiss();
-    }*/
 }
 

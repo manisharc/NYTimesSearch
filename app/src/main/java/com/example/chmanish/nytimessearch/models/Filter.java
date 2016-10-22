@@ -7,45 +7,91 @@ import java.util.Calendar;
  */
 public class Filter {
 
-    int monthOfYear;
-    int day;
-    int year;
-
+    String date;
     boolean sortOldest;
+    boolean checkArts;
+    boolean checkFashion;
+    boolean checkSports;
 
     public Filter() {
         final Calendar c = Calendar.getInstance();
-        this.monthOfYear = c.get(Calendar.MONTH);
-        this.day = c.get(Calendar.DAY_OF_MONTH);;
-        this.year = c.get(Calendar.YEAR);;
+        StringBuilder sb = new StringBuilder().append(c.get(Calendar.YEAR));
+        if(c.get(Calendar.MONTH) < 10)
+            sb.append(0);
+        sb.append(c.get(Calendar.MONTH));
+        if(c.get(Calendar.DAY_OF_MONTH) < 10)
+            sb.append(0);
+        sb.append(Calendar.DAY_OF_MONTH);
+        date = sb.toString();
         this.sortOldest = true;
         this.checkArts = false;
         this.checkFashion = false;
         this.checkSports = false;
     }
 
-    public int getMonthOfYear() {
-        return monthOfYear;
+    public Filter(Filter a) {
+        this.date = a.getDate();
+        this.sortOldest = a.isSortOldest();
+        this.checkArts = a.isCheckArts();
+        this.checkFashion = a.isCheckFashion();
+        this.checkSports = a.isCheckSports();
     }
 
-    public void setMonthOfYear(int monthOfYear) {
-        this.monthOfYear = monthOfYear;
+    public String getDate() {
+        return date;
     }
 
-    public int getDay() {
-        return day;
+    public void setDate(int year, int monthOfYear, int day) {
+        StringBuilder sb = new StringBuilder().append(year);
+        if (monthOfYear < 10)
+            sb.append(0);
+        sb.append(monthOfYear);
+        if(day < 10)
+            sb.append(0);
+        sb.append(day);
+        this.date = sb.toString();
     }
+    //params.put("fq", "news_desk:(\"Education\"%20\"Health\")");
 
-    public void setDay(int day) {
-        this.day = day;
-    }
+    public String getNewsDeskString(){
 
-    public int getYear() {
-        return year;
-    }
+        StringBuilder sb = new StringBuilder();
 
-    public void setYear(int year) {
-        this.year = year;
+        if (!isCheckFashion() &&
+               !isCheckArts() &&
+               !isCheckSports())
+            return sb.toString();
+        boolean addedSomething = false;
+        sb.append("news_desk:(");
+        if(isCheckFashion()){
+            sb.append("\"Fashion%20%26%20Style\"");
+            addedSomething = true;
+        }
+
+        if(isCheckArts()) {
+            if (addedSomething == false)
+            {
+                sb.append("\"Arts\"");
+                addedSomething = true;
+            }
+            else
+                sb.append("\20 \"Arts\"");
+        }
+
+        if(isCheckSports()) {
+            if (addedSomething == false)
+            {
+                sb.append("\"Sports\"");
+                addedSomething = true;
+            }
+            else
+                sb.append("\20 \"Sports\"");
+        }
+        sb.append(")");
+
+        return sb.toString();
+
+
     }
 
     public boolean isSortOldest() {
@@ -80,7 +126,4 @@ public class Filter {
         this.checkSports = checkSports;
     }
 
-    boolean checkArts;
-    boolean checkFashion;
-    boolean checkSports;
 }

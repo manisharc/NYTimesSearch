@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.example.chmanish.nytimessearch.R;
 import com.example.chmanish.nytimessearch.adapters.ArticleArrayAdapter;
@@ -33,12 +32,11 @@ import cz.msebera.android.httpclient.Header;
 
 public class SearchActivity extends AppCompatActivity implements EditFilterDialogFragment.EditFilterDialogListener {
 
-    //EditText etQuery;
     GridView gvResults;
-    //Button btnSearch;
-    boolean isFilterSet;
+    Filter filterSet;
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,13 +45,10 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("New York Times Search");
         setupViews();
-
     }
 
     public void setupViews(){
-        //etQuery = (EditText) findViewById(R.id.etQuery);
         gvResults = (GridView) findViewById(R.id.gvResults);
-        //btnSearch = (Button) findViewById(R.id.btnSearch);
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(this, articles);
         gvResults.setAdapter(adapter);
@@ -91,13 +86,23 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
                 params.put("page", 0);
                 params.put("q", query);
 
+                if(filterSet != null){
+                    params.put("begin_date", filterSet.getDate());
+                    if (filterSet.isSortOldest())
+                        params.put("sort", "oldest");
+                    if(filterSet.getNewsDeskString() != null){
+                        params.put("fq", filterSet.getNewsDeskString());
+                    }
+
+                }
+
                 client.get(url, params, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         JSONArray articleJsonResults = null;
-
                         try{
                             articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+                            adapter.clear();
                             adapter.addAll(Article.fromJSONArray(articleJsonResults));
                         } catch (JSONException e){
                             e.printStackTrace();
@@ -127,11 +132,6 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        /*if (id == R.id.action_settings) {
-            return true;
-        }*/
-
         if (id == R.id.action_filter) {
             FragmentManager fm = getSupportFragmentManager();
             EditFilterDialogFragment editNameDialogFragment = EditFilterDialogFragment.newInstance();
@@ -142,17 +142,12 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
 
         return super.onOptionsItemSelected(item);
     }
-    /*
-    public void onArticleSearch(View view) {
-        String query = etQuery.getText().toString();
-        //Toast.makeText(this, "Searching for" + query, Toast.LENGTH_LONG).show();
 
-    }*/
     @Override
     public void onFinishEditDialog(Filter filterValues) {
-        StringBuilder sb = new StringBuilder().append(filterValues.getMonthOfYear())
-                .append("/").append(filterValues.getDay()).append("/").append(filterValues.getYear());
-        Toast.makeText(this, sb.toString(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, filterValues.getDate(), Toast.LENGTH_SHORT).show();
+        filterSet = new Filter(filterValues);
+
     }
 
 }
