@@ -6,9 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.example.chmanish.nytimessearch.R;
 import com.example.chmanish.nytimessearch.models.Article;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -95,7 +95,7 @@ public class ComplexArticleAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 vh1.getTextView().setText(article.getHeadline());
                 vh1.getImageView().setImageResource(0);
                 String thumbnail = article.getThumbNail();
-                Picasso.with(getContext()).load(thumbnail).into(vh1.getImageView());
+                Glide.with(getContext()).load(thumbnail).into(vh1.getImageView());
                 break;
             default: //case TEXT_ONLY:
                 ViewHolder2 vh2 = (ViewHolder2) viewHolder;

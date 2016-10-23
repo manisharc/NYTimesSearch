@@ -1,14 +1,21 @@
 package com.example.chmanish.nytimessearch.activities;
 
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +45,7 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
     ArrayList<Article> articles;
     ComplexArticleAdapter adapter;
     static String querySavedForPagination;
+    int requestCode = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +73,31 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
                 new ItemClickSupport.OnItemClickListener() {
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+
+                        /* Approach 1 - new activity which shows webview
                         Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
                         Article article = articles.get(position);
                         i.putExtra("article", article);
-                        startActivity(i);
+                        startActivity(i);*/
+
+                        // Approach 2 - chrome custom tab
+                        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                        builder.setToolbarColor(ContextCompat.getColor(SearchActivity.this, R.color.colorPrimary));
+                        //Sharing button
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.setType("text/plain");
+                        intent.putExtra(Intent.EXTRA_TEXT, articles.get(position).getWebUrl());
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_share_light);
+                        PendingIntent pendingIntent = PendingIntent.getActivity(SearchActivity.this,
+                                requestCode,
+                                intent,
+                                PendingIntent.FLAG_UPDATE_CURRENT);
+                        builder.setActionButton(bitmap, "Share Link", pendingIntent);
+
+                        CustomTabsIntent customTabsIntent = builder.build();
+                        customTabsIntent.launchUrl(SearchActivity.this, Uri.parse(articles.get(position).getWebUrl()));
+
+
                     }
                 }
         );
@@ -169,6 +198,12 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
+            }
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.d("Failed: ", "" + statusCode);
+                Log.d("Error : ", "" + throwable);
             }
         });
 

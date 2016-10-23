@@ -10,7 +10,6 @@ import com.example.chmanish.nytimessearch.R;
 import com.example.chmanish.nytimessearch.models.Article;
 
 public class ArticleActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,8 +18,8 @@ public class ArticleActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Article article = (Article) getIntent().getParcelableExtra("article");
+        //Web view approach
         WebView webView = (WebView) findViewById(R.id.wvArticle);
-
         webView.setWebViewClient(new WebViewClient() {
                                      @Override
                                      public boolean shouldOverrideUrlLoading(WebView view, String url) {

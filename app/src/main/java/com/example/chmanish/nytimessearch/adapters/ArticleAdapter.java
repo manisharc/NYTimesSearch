@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.chmanish.nytimessearch.R;
 import com.example.chmanish.nytimessearch.models.Article;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -110,7 +110,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
         String thumbnail = article.getThumbNail();
         if (!TextUtils.isEmpty(thumbnail)){
-            Picasso.with(getContext()).load(thumbnail).into(viewHolder.imageView);
+            Glide.with(getContext()).load(thumbnail).into(viewHolder.imageView);
         }
 
     }
