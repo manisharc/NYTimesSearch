@@ -7,6 +7,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.example.chmanish.nytimessearch.R;
+import com.example.chmanish.nytimessearch.models.Article;
 
 public class ArticleActivity extends AppCompatActivity {
 
@@ -17,7 +18,7 @@ public class ArticleActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        String url = getIntent().getStringExtra("url");
+        Article article = (Article) getIntent().getParcelableExtra("article");
         WebView webView = (WebView) findViewById(R.id.wvArticle);
 
         webView.setWebViewClient(new WebViewClient() {
@@ -27,7 +28,7 @@ public class ArticleActivity extends AppCompatActivity {
                                          return true;
                                      }
                                  });
-        webView.loadUrl(url);
+        webView.loadUrl(article.getWebUrl());
 
     }
 

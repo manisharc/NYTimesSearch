@@ -21,7 +21,6 @@ import cz.msebera.android.httpclient.util.TextUtils;
  */
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
 
-    /***** Creating OnItemClickListener *****/
     // Define listener member variable
     private static OnItemClickListener listener;
     // Define the listener interface
@@ -89,7 +88,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View articleView = inflater.inflate(R.layout.item_article_result, parent, false);
+        View articleView = inflater.inflate(R.layout.item_article_image_text, parent, false);
 
         // Return a new holder instance
         ViewHolder viewHolder = new ViewHolder(articleView);
@@ -123,41 +122,4 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         }
 }
 
-
-    /*public ArticleArrayAdapter (Context context, List<Article> articles){
-        super(context, android.R.layout.simple_list_item_1, articles);
-
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        //get the data item for position
-        Article article = this.getItem(position);
-
-        //check to see if existing view is being reused
-        //not using a recycled view -> inflate the layout
-        if (convertView == null){
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.item_article_result, parent, false);
-        }
-
-        //find the image view
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.ivImage);
-
-        //clear out recycled image from convertView from last time
-        imageView.setImageResource(0);
-
-        TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
-        tvTitle.setText(article.getHeadline());
-
-        //populate the thumbnail image
-        //remote download the image in the background
-
-        String thumbnail = article.getThumbNail();
-        if (!TextUtils.isEmpty(thumbnail)){
-            Picasso.with(getContext()).load(thumbnail).into(imageView);
-        }
-        return convertView;
-
-    }*/
 
