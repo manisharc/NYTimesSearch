@@ -10,12 +10,12 @@ import com.example.chmanish.nytimessearch.R;
 /**
  * Created by chmanish on 10/22/16.
  */
-public class ViewHolder1 extends RecyclerView.ViewHolder {
+public class ViewHolderImageText extends RecyclerView.ViewHolder {
     private TextView tvTitle;
     private ImageView ivImage;
 
 
-    public ViewHolder1(View v) {
+    public ViewHolderImageText(View v) {
         super(v);
         tvTitle = (TextView) v.findViewById(R.id.tvTitle);
         ivImage = (ImageView) v.findViewById(R.id.ivImage);

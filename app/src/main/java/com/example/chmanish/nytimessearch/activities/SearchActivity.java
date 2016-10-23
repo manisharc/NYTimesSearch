@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.customtabs.CustomTabsIntent;
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.chmanish.nytimessearch.ItemClickSupport;
 import com.example.chmanish.nytimessearch.R;
@@ -53,7 +55,12 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
         setContentView(R.layout.activity_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("New York Times Search");
+        getSupportActionBar().setTitle("");
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/AncientMedium.ttf");
+        TextView tvToolBarTitle = (TextView) findViewById(R.id.toolbar_title);
+        tvToolBarTitle.setText("New York Times");
+        tvToolBarTitle.setTypeface(font);
+
         setupViews();
     }
 

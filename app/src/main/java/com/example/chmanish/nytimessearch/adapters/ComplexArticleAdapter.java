@@ -63,15 +63,15 @@ public class ComplexArticleAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         switch (viewType) {
             case IMAGE:
                 View v1 = inflater.inflate(R.layout.item_article_image_text, viewGroup, false);
-                viewHolder = new ViewHolder1(v1);
+                viewHolder = new ViewHolderImageText(v1);
                 break;
             case TEXT_ONLY:
                 View v2 = inflater.inflate(R.layout.item_article_text, viewGroup, false);
-                viewHolder = new ViewHolder2(v2);
+                viewHolder = new ViewHolderTextOnly(v2);
                 break;
             default:
                 View v3 = inflater.inflate(R.layout.item_article_text, viewGroup, false);
-                viewHolder = new ViewHolder2(v3);
+                viewHolder = new ViewHolderTextOnly(v3);
                 break;
 
         }
@@ -91,14 +91,14 @@ public class ComplexArticleAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         Article article = mArticles.get(position);
         switch (viewHolder.getItemViewType()) {
             case IMAGE:
-                ViewHolder1 vh1 = (ViewHolder1) viewHolder;
+                ViewHolderImageText vh1 = (ViewHolderImageText) viewHolder;
                 vh1.getTextView().setText(article.getHeadline());
                 vh1.getImageView().setImageResource(0);
                 String thumbnail = article.getThumbNail();
                 Glide.with(getContext()).load(thumbnail).into(vh1.getImageView());
                 break;
             default: //case TEXT_ONLY:
-                ViewHolder2 vh2 = (ViewHolder2) viewHolder;
+                ViewHolderTextOnly vh2 = (ViewHolderTextOnly) viewHolder;
                 vh2.getTextView().setText(article.getHeadline());
 
                 break;
@@ -111,6 +111,5 @@ public class ComplexArticleAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public int getItemCount() {
         return mArticles.size();
     }
-
 
 }

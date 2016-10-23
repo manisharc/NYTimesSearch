@@ -9,7 +9,7 @@ import com.example.chmanish.nytimessearch.R;
 /**
  * Created by chmanish on 10/22/16.
  */
-public class ViewHolder2 extends RecyclerView.ViewHolder{
+public class ViewHolderTextOnly extends RecyclerView.ViewHolder{
     private TextView tvTitle;
 
     // Define listener member variable
@@ -23,7 +23,7 @@ public class ViewHolder2 extends RecyclerView.ViewHolder{
         this.listener = listener;
     }
 
-    public ViewHolder2(View v) {
+    public ViewHolderTextOnly(View v) {
         super(v);
         tvTitle = (TextView) v.findViewById(R.id.tvTitle);
 
