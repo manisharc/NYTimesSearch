@@ -1,7 +1,9 @@
-package com.example.chmanish.nytimessearch;
+package com.example.chmanish.nytimessearch.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import com.example.chmanish.nytimessearch.R;
 
 /*
   Source: http://www.littlerobots.nl/blog/Handle-Android-RecyclerView-Clicks/

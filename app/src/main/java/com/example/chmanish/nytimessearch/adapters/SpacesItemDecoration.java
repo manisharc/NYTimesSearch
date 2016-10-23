@@ -1,4 +1,4 @@
-package com.example.chmanish.nytimessearch;
+package com.example.chmanish.nytimessearch.adapters;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

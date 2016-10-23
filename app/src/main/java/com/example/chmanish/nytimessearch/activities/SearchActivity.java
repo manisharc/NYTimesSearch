@@ -21,15 +21,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.chmanish.nytimessearch.ItemClickSupport;
 import com.example.chmanish.nytimessearch.R;
-import com.example.chmanish.nytimessearch.SpacesItemDecoration;
 import com.example.chmanish.nytimessearch.adapters.ComplexArticleAdapter;
 import com.example.chmanish.nytimessearch.adapters.EndlessRecyclerViewScrollListener;
+import com.example.chmanish.nytimessearch.adapters.ItemClickSupport;
+import com.example.chmanish.nytimessearch.adapters.SpacesItemDecoration;
 import com.example.chmanish.nytimessearch.fragments.EditFilterDialogFragment;
 import com.example.chmanish.nytimessearch.models.Article;
 import com.example.chmanish.nytimessearch.models.Filter;
+import com.example.chmanish.nytimessearch.network.NetworkStatus;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -48,6 +50,8 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
     ComplexArticleAdapter adapter;
     static String querySavedForPagination;
     int requestCode = 100;
+    NetworkStatus networkStatus;
+    Toast networkAlert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,8 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
         TextView tvToolBarTitle = (TextView) findViewById(R.id.toolbar_title);
         tvToolBarTitle.setText("New York Times");
         tvToolBarTitle.setTypeface(font);
+        networkStatus = NetworkStatus.getSharedInstance();
+        networkAlert = Toast.makeText(getApplicationContext(),"Please make sure you are connected.",Toast.LENGTH_LONG);
 
         setupViews();
     }
@@ -81,6 +87,10 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
 
+                        if (!networkStatus.isOnline() ||
+                                !networkStatus.isNetworkAvailable(getApplicationContext())){
+                            networkAlert.show();
+                        }
                         /* Approach 1 - new activity which shows webview
                         Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
                         Article article = articles.get(position);
@@ -156,7 +166,6 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         if (id == R.id.action_filter) {
             FragmentManager fm = getSupportFragmentManager();
             EditFilterDialogFragment editNameDialogFragment = EditFilterDialogFragment.newInstance();
@@ -182,6 +191,11 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
         params.put("api-key", "0615376bbf4c4801a036cccbc32d58f0");
         params.put("page", page);
         params.put("q", querySavedForPagination);
+
+        if (!networkStatus.isOnline() ||
+                !networkStatus.isNetworkAvailable(getApplicationContext())){
+            networkAlert.show();
+        }
 
         if(filterSet != null){
             if(filterSet.getDate() != null)
