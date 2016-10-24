@@ -90,6 +90,7 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
                         if (!networkStatus.isOnline() ||
                                 !networkStatus.isNetworkAvailable(getApplicationContext())){
                             networkAlert.show();
+                            return;
                         }
                         /* Approach 1 - new activity which shows webview
                         Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
@@ -195,6 +196,7 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
         if (!networkStatus.isOnline() ||
                 !networkStatus.isNetworkAvailable(getApplicationContext())){
             networkAlert.show();
+            return;
         }
 
         if(filterSet != null){
