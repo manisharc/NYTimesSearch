@@ -141,7 +141,7 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
                 }*/
                 pageOnLoadMore = page;
                 if ((page % 5) == 0)
-                    handler.postDelayed(runnableCode, 100);
+                    handler.postDelayed(runnableCode, 300);
                 else
                     handler.post(runnableCode);
             }
