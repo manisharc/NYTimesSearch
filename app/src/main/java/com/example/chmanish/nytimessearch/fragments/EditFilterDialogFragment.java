@@ -43,9 +43,6 @@ public class EditFilterDialogFragment extends DialogFragment implements DatePick
 
     public static EditFilterDialogFragment newInstance() {
         EditFilterDialogFragment frag = new EditFilterDialogFragment();
-        //Bundle args = new Bundle();
-        //args.putString("title", title);
-        //frag.setArguments(args);
         return frag;
     }
 
@@ -106,14 +103,6 @@ public class EditFilterDialogFragment extends DialogFragment implements DatePick
                 showDatePicker();
             }
         });
-        // Fetch arguments from bundle and set title
-        //String title = getArguments().getString("title", "Enter Name");
-        //getDialog().setTitle(title);
-        // Show soft keyboard automatically and request focus to field
-        //sp.requestFocus();
-        //getDialog().getWindow().setSoftInputMode(
-        //        WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
     }
 
     private void showDatePicker() {
@@ -142,7 +131,7 @@ public class EditFilterDialogFragment extends DialogFragment implements DatePick
         Display display = window.getWindowManager().getDefaultDisplay();
         display.getSize(size);
         // Set the width of the dialog proportional to 75% of the screen width
-        window.setLayout((int) (size.x * 0.75), (int) (size.y * 0.5));
+        window.setLayout((int) (size.x * 0.75), (int) (size.y * 0.6));
         window.setGravity(Gravity.CENTER);
         // Call super onResume after sizing
         super.onResume();

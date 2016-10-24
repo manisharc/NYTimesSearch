@@ -221,10 +221,15 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
                 }
             }
 
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
+                super.onFailure(statusCode, headers, throwable, response);
                 Log.d("Failed: ", "" + statusCode);
                 Log.d("Error : ", "" + throwable);
+                if (statusCode == 429){
+                    Toast.makeText(getApplicationContext(),"API Limit Reached.",Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
 
