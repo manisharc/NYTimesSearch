@@ -136,7 +136,7 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
             public void onLoadMore(int page, int totalItemsCount) {
                 pageOnLoadMore = page;
                 // For robust handling of api rate limits.
-                handler.postDelayed(runnableCode, 300);
+                handler.postDelayed(runnableCode, 400);
             }
         });
     }
