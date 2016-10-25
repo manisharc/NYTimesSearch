@@ -78,6 +78,11 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
         networkStatus = NetworkStatus.getSharedInstance();
         networkAlert = Toast.makeText(getApplicationContext(),"Please make sure you are connected.",Toast.LENGTH_LONG);
 
+        if (!networkStatus.isOnline() ||
+                !networkStatus.isNetworkAvailable(getApplicationContext())){
+            networkAlert.show();
+            return;
+        }
         setupViews();
     }
 
@@ -136,7 +141,7 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
             public void onLoadMore(int page, int totalItemsCount) {
                 pageOnLoadMore = page;
                 // For robust handling of api rate limits.
-                handler.postDelayed(runnableCode, 400);
+                handler.postDelayed(runnableCode, 200);
             }
         });
     }
@@ -209,12 +214,6 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
             params.put("page", pageOnLoadMore);
         params.put("q", querySavedForPagination);
 
-        if (!networkStatus.isOnline() ||
-                !networkStatus.isNetworkAvailable(getApplicationContext())){
-            networkAlert.show();
-            return;
-        }
-
         if(filterSet != null){
             if(filterSet.getDate() != null)
                 params.put("begin_date", filterSet.getDate());
@@ -244,8 +243,11 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
                 super.onFailure(statusCode, headers, throwable, response);
                 Log.d("Failed: ", "" + statusCode);
                 Log.d("Error : ", "" + throwable);
+                //API Limit Reached
                 if (statusCode == 429){
-                    Toast.makeText(getApplicationContext(),"API Limit Reached.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"API Limit Reached. Retrying",Toast.LENGTH_SHORT).show();
+                    //Retry the request
+                    handler.postDelayed(runnableCode, 500);
 
                 }
             }
