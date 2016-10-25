@@ -6,9 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
 import com.example.chmanish.nytimessearch.R;
 import com.example.chmanish.nytimessearch.models.Article;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -23,6 +23,7 @@ public class ComplexArticleAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     // Store the context for easy access
     private Context mContext;
 
+    RecyclerView.ViewHolder viewHolder;
     // Pass in the article array into the constructor
     public ComplexArticleAdapter(Context context, List<Article> articles) {
         mArticles = articles;
@@ -57,7 +58,7 @@ public class ComplexArticleAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
-        RecyclerView.ViewHolder viewHolder;
+
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
 
         switch (viewType) {
@@ -95,7 +96,10 @@ public class ComplexArticleAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 vh1.getTextView().setText(article.getHeadline());
                 vh1.getImageView().setImageResource(0);
                 String thumbnail = article.getThumbNail();
-                Glide.with(getContext()).load(thumbnail).into(vh1.getImageView());
+                //Glide.with(getContext()).load(thumbnail).into(vh1.getImageView());
+                Picasso.with(getContext()).load(thumbnail).into(vh1.target);
+
+
                 break;
             default: //case TEXT_ONLY:
                 ViewHolderTextOnly vh2 = (ViewHolderTextOnly) viewHolder;
