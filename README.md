@@ -50,8 +50,9 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/2rykkH2.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='http://i.imgur.com/FcuhG0N.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
+http://imgur.com/2rykkH2.gif shows infinite scrolling better but is too long for github
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
