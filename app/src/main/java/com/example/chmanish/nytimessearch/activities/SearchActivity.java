@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -53,10 +54,20 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
     NetworkStatus networkStatus;
     Toast networkAlert;
 
+    Handler handler;
+    static int pageOnLoadMore = 0;
+    private Runnable runnableCode = new Runnable() {
+        @Override
+        public void run() {
+            makeQueryAndUpdateView(false);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        handler = new Handler();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
@@ -123,7 +134,9 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
         rvArticles.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                makeQueryAndUpdateView(page);
+                pageOnLoadMore = page;
+                // For robust handling of api rate limits.
+                handler.postDelayed(runnableCode, 300);
             }
         });
     }
@@ -145,7 +158,7 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
                     adapter.notifyItemRangeRemoved(0, curSize);
                 }
                 querySavedForPagination = query;
-                makeQueryAndUpdateView(0);
+                makeQueryAndUpdateView(true);
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599
                 searchView.clearFocus();
@@ -184,13 +197,16 @@ public class SearchActivity extends AppCompatActivity implements EditFilterDialo
 
     }
 
-    public void makeQueryAndUpdateView(int page){
+    public void makeQueryAndUpdateView(boolean isFirstCall){
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
 
         RequestParams params = new RequestParams();
         params.put("api-key", "0615376bbf4c4801a036cccbc32d58f0");
-        params.put("page", page);
+        if (isFirstCall)
+            params.put("page", 0);
+        else
+            params.put("page", pageOnLoadMore);
         params.put("q", querySavedForPagination);
 
         if (!networkStatus.isOnline() ||
