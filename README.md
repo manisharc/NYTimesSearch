@@ -2,7 +2,7 @@
 
 **NYTimesSearch** is an android app that allows a user to search for articles on web using simple filters. The app utilizes [New York Times Search API](http://developer.nytimes.com/docs/read/article_search_api_v2).
 
-Time spent: **20** hours spent in total
+Time spent: **24** hours spent in total
 
 ## User Stories
 
@@ -44,12 +44,13 @@ The following **additional** features are implemented:
 * [x] Used card view for better looking UI.
 * [x] Custom tool bar font and filter image.
 * [x] Custom layout decorators for Recycler View.
+* [x] Handled 429 error (api rate limits) using runnable
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/FcuhG0N.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='http://i.imgur.com/gqFZEmM.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
