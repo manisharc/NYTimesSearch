@@ -1,4 +1,4 @@
-package com.example.chmanish.nytimessearch.adapters;
+package com.example.chmanish.nytimessearch.views;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

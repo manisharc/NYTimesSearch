@@ -1,4 +1,4 @@
-package com.example.chmanish.nytimessearch.adapters;
+package com.example.chmanish.nytimessearch.views;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -9,7 +9,7 @@
     <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <com.example.chmanish.nytimessearch.adapters.DynamicHeightImageView
+    <com.example.chmanish.nytimessearch.views.DynamicHeightImageView
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:layout_width="match_parent"

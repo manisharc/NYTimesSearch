@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import com.example.chmanish.nytimessearch.R;
 import com.example.chmanish.nytimessearch.models.Article;
+import com.example.chmanish.nytimessearch.views.ViewHolderImageText;
+import com.example.chmanish.nytimessearch.views.ViewHolderTextOnly;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

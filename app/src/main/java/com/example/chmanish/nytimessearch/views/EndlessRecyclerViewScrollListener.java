@@ -1,4 +1,4 @@
-package com.example.chmanish.nytimessearch.adapters;
+package com.example.chmanish.nytimessearch.views;
 
 /**
  * Created by chmanish on 10/21/16.

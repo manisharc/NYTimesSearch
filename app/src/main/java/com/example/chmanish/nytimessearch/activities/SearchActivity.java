@@ -26,9 +26,9 @@ import android.widget.Toast;
 
 import com.example.chmanish.nytimessearch.R;
 import com.example.chmanish.nytimessearch.adapters.ComplexArticleAdapter;
-import com.example.chmanish.nytimessearch.adapters.EndlessRecyclerViewScrollListener;
-import com.example.chmanish.nytimessearch.adapters.ItemClickSupport;
-import com.example.chmanish.nytimessearch.adapters.SpacesItemDecoration;
+import com.example.chmanish.nytimessearch.views.EndlessRecyclerViewScrollListener;
+import com.example.chmanish.nytimessearch.views.ItemClickSupport;
+import com.example.chmanish.nytimessearch.views.SpacesItemDecoration;
 import com.example.chmanish.nytimessearch.fragments.EditFilterDialogFragment;
 import com.example.chmanish.nytimessearch.models.Article;
 import com.example.chmanish.nytimessearch.models.Filter;
